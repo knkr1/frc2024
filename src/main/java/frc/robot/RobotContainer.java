@@ -130,12 +130,10 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    /*
-     * DriverStation.Alliance color;
-     * color = DriverStation.getAlliance().get();
-     * int isBlueAlliance = DriverStation.Alliance.Blue == color ? 1 : -1;
-     */
-    int isBlueAlliance = 1;
+
+     DriverStation.Alliance color;
+     color = DriverStation.getAlliance().get();
+     int isBlueAlliance = DriverStation.Alliance.Blue == color ? 1 : -1;
 
     Command driveFieldOrientedAngularVelocity = s_swerve.driveCommand(
         () -> isBlueAlliance * speedRate
@@ -165,7 +163,7 @@ public class RobotContainer {
 
     // Dashboard Verileri
     SmartDashboard.putNumber("Swerve Speed Rate", speedRate);
-    SmartDashboard.putBoolean("Is Back", MuratCont.yesilbas);
+    SmartDashboard.putBoolean("Is Back", s_led.getLed());
 
     // Configure the trigger bindings
     configureBindings();
@@ -197,15 +195,16 @@ public class RobotContainer {
   private void configureBindings() {
 
     // Gyro Sıfırlama
-    driverXbox.x().onTrue(
-        s_swerve.run((() -> s_swerve.zeroGyro())));
+    driverXbox.x().onTrue(s_swerve.zeroGyro().andThen(s_swerve.lock()));
+  
 
     // Swerve Kitleme
     driverXbox.b().whileTrue(
-        s_swerve.run((() -> s_swerve.lock())));
+        s_swerve.lock()
+        );
 
-    // Speaker YAW (paremeter = tolarance)
-    driverXbox.povUp().whileTrue(s_swerve.aimAtSpeaker(2));
+    //bilmem
+    driverXbox.povUp().whileTrue(s_swerve.aimAtMurat(camera));
 
     driverXbox.back().whileTrue(new RunCommand(()->{
       s_led.MuratContDegis(true);
