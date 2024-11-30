@@ -26,6 +26,7 @@ public class LedSubsystem extends SubsystemBase {
     private AddressableLEDBuffer ledBuffer;
     public static int LedCount = 138;
     public boolean isBlink = false;
+    private int pulseOffset2;
 
     public LedSubsystem(SwerveSubsystem s_swerve) {
 
@@ -40,6 +41,7 @@ public class LedSubsystem extends SubsystemBase {
         led.start();
 
         m_rainbowFirstPixelHue = 0;
+        pulseOffset2 = 0;
 
     }
 
@@ -140,10 +142,23 @@ public class LedSubsystem extends SubsystemBase {
         }
     }
 
-    public Command LedCommand(SwerveSubsystem s_swerve, Indexer in) {
+    public void greenPulse() {
+        int intensity = 255 - pulseOffset2;
+        for (int i = 0; i < ledBuffer.getLength() / 2 + 1; i++) {
+            ledBuffer.setRGB(i, 0, (intensity + 25 * i) % 255, 0);
+            ledBuffer.setRGB(ledBuffer.getLength() - 1 - i, 0, (intensity + 25 * i) % 255, 0);
+        }
+        pulseOffset2 = (pulseOffset2 + 10) % 255;
+        led.setData(ledBuffer);
+    }
+    
+
+    public Command LedCommand(SwerveSubsystem s_swerve, Indexer in, PhotonCamera camera) {
         return run(() -> {
             if (in.isIndex()==true) {
                 rainbow();
+            } else if (s_swerve.IsSpeakerOk(camera)) {
+                greenPulse();
             } else if (getLed()) {
                 BlinkGreen();
             } else {

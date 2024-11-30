@@ -468,6 +468,8 @@ public class Vision
       }
     }
 
+    
+
     /**
      * Add camera to {@link VisionSystemSim} for simulated photon vision.
      *
@@ -481,6 +483,6 @@ public class Vision
 //        cameraSim.enableDrawWireframe(true);
       }
     }
+    
   }
-
 }

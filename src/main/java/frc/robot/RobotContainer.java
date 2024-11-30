@@ -26,9 +26,13 @@ import frc.robot.Constants.MuratCont;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.Vision;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.photonvision.PhotonCamera;
 
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.LedSubsystem;
@@ -118,6 +122,8 @@ public class RobotContainer {
 
   private LedSubsystem s_led = new LedSubsystem(s_swerve);
   private Indexer s_Indexer = new Indexer();
+  private PhotonCamera camera = new PhotonCamera("otreis");
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -169,7 +175,7 @@ public class RobotContainer {
         !RobotBase.isSimulation() ? driveFieldOrientedAngularVelocity : driveFieldOrientedDirectAngleSim);
 
     // Led Setup
-    s_led.setDefaultCommand(s_led.LedCommand(s_swerve,s_Indexer));
+    s_led.setDefaultCommand(s_led.LedCommand(s_swerve,s_Indexer, camera));
 
   }
 

@@ -6,11 +6,13 @@ package frc.robot.subsystems.swervedrive;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import org.opencv.core.Mat;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -256,13 +258,35 @@ public class SwerveSubsystem extends SubsystemBase
     });
   }
 
-  public boolean IsSpeakerOk(){
-    Rotation2d swerveYaw = swerveDrive.getYaw();
-    Rotation2d TagYaw = getSpeakerYaw();
+   public Command aimAtMurat(PhotonCamera camera)
+  {
 
-
-    return (Math.abs(swerveYaw.getDegrees() - TagYaw.getDegrees()) <= 20);
+    return run(() -> {
+      PhotonPipelineResult result = camera.getLatestResult();
+      if (result.hasTargets())
+      {
+        List<PhotonTrackedTarget> r = result.getTargets();
+        for(PhotonTrackedTarget t:r){
+          if(t.getFiducialId()==7 || t.getFiducialId()==4){
+            drive(getTargetSpeeds(0,0,Rotation2d.fromDegrees(t.getYaw())));
+          }
+        }
+      }
+    });
   }
+
+  public boolean IsSpeakerOk(PhotonCamera camera){
+    PhotonPipelineResult result = camera.getLatestResult();
+    if(!result.targets.isEmpty()){
+      List<PhotonTrackedTarget> r2 = result.getTargets();
+      for(PhotonTrackedTarget t : r2){
+        if(t.getFiducialId()==7 || t.getFiducialId()==4){
+          return true;
+        } 
+      }
+    }
+    return false;
+}
 
   /**
    * Get the path follower with events.
@@ -710,7 +734,7 @@ public class SwerveSubsystem extends SubsystemBase
   public Command turn180()
   {
     return run(()->{
-      resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
+       drive(getTargetSpeeds(0,0,Rotation2d.fromDegrees(swerveDrive.getYaw().getDegrees()-180)));
     });
   }
 }
