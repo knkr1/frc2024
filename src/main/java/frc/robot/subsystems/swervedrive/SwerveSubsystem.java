@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 
 import org.opencv.core.Mat;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -268,6 +269,7 @@ public class SwerveSubsystem extends SubsystemBase
         List<PhotonTrackedTarget> r = result.getTargets();
         for(PhotonTrackedTarget t:r){
           if(t.getFiducialId()==7 || t.getFiducialId()==4){
+            //Rotation2d yaw = PhotonUtils.getYawToPose(getPose(), t.getBestCamera))
             drive(getTargetSpeeds(0,0,Rotation2d.fromDegrees(t.getYaw())));
           }
         }
@@ -282,7 +284,9 @@ public class SwerveSubsystem extends SubsystemBase
       for(PhotonTrackedTarget t : r2){
         if(t.getFiducialId()==7 || t.getFiducialId()==4){
           return true;
-        } 
+        }else{
+          System.out.println(t);
+        }
       }
     }
     return false;

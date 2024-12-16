@@ -155,7 +155,7 @@ public class LedSubsystem extends SubsystemBase {
 
     public Command LedCommand(SwerveSubsystem s_swerve, Indexer in, PhotonCamera camera) {
         return run(() -> {
-            if (in.isIndex()==true) {
+            if (false) {
                 rainbow();
             } else if (s_swerve.IsSpeakerOk(camera)) {
                 greenPulse();

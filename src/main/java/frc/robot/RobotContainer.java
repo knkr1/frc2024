@@ -34,7 +34,10 @@ import java.nio.file.Paths;
 
 import org.photonvision.PhotonCamera;
 
+import com.fasterxml.jackson.databind.node.IntNode;
+
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LedSubsystem;
 
 /**
@@ -122,7 +125,8 @@ public class RobotContainer {
 
   private LedSubsystem s_led = new LedSubsystem(s_swerve);
   private Indexer s_Indexer = new Indexer();
-  private PhotonCamera camera = new PhotonCamera("otreis");
+  private PhotonCamera camera = new PhotonCamera("Limelight");
+  private Intake s_intake = new Intake();
 
 
   /**
@@ -212,7 +216,9 @@ public class RobotContainer {
      driverXbox.back().whileFalse(new RunCommand(()->{
       s_led.MuratContDegis(false);
     }));
-    driverXbox.povLeft().onTrue(s_swerve.turn180());
+
+    driverXbox.rightTrigger().whileTrue(s_intake.RunMotor()).onFalse(s_intake.StopMotor());
+    //driverXbox.povLeft().onTrue(s_swerve.turn180());
 
   }
 
